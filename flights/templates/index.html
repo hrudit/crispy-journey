@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>flighty</title>
+        <style>
+            .profile{
+                width: 50px;
+                height: 50px;
+                border: 2px black;
+                margin-left: auto;
+                margin-right: auto;
+                float: left;
+                
+            }
+        </style>
+    </head>
+
+    <body>
+        
+         <h1 style="margin-left:200px; margin-top:100px;"> Flights for {{name}} </h1>
+         <hr>
+         {% for flight in flighty %}
+         {% if flight.price !=-1 %}
+         <div style="width:500px; height:250px; border:2px ;border-style:solid ; border-color:black;">
+            <div style="width:500px; height:100px;">
+               <p>your flight goes from {{ flight.start }} to {{flight.end}} in {{flight.month}} </p>
+               <p>your flight price is {{flight.price}} $</p>
+                {% if flight.less_than %}
+                   <p>we got a deal!</p> 
+                {% else %} 
+                   <p>well keep looking </p>
+                {% endif %} 
+            </div>
+                <div style="width:500px; height:20px;">
+                    
+                    delete
+                    <form action="{{   url_for('delete',target='/' )    }}" method="post" enctype="multipart/form-data">
+                          <input type="submit" name="delete" value="delete"/>
+                          <input type="hidden" name="tripid" value="{{ flight.tripid }}"/>
+                          <input type="hidden" name="operation" value="delete" />
+                    </form>
+                </div>
+                <div style="width:500px; height:50px;"></div>
+                    edit this flight
+                    <form action="{{   url_for('edit',target='/' )    }}" method="post" enctype="multipart/form-data">
+                          <input type="submit" name="change" value="change"/>
+                          <input type="hidden" name="tripid" value="{{ flight.tripid }}"/>
+                          <input type="text" name="month" required/>
+                          <input type="hidden" name="operation" value="edit">
+                    </form>
+                </div>
+              
+         </div>
+         <br>
+         {% else %}
+         <div style="width:500px; height:200px; border:2px ;border-style:solid ; border-color:black;">
+         <p>No flight goes from {{ flight.start }} to {{flight.end}} in {{flight.month}} </p>
+         <div style="width:500px; height:20px;">
+                    
+            delete
+            <form action="{{   url_for('delete',target='/' )    }}" method="post" enctype="multipart/form-data">
+                  <input type="submit" name="delete" value="delete"/>
+                  <input type="hidden" name="tripid" value="{{ flight.tripid }}"/>
+                  <input type="hidden" name="operation" value="delete" />
+            </form>
+        </div>
+        <div style="width:500px; height:50px;"></div>
+            edit this flight
+            <form action="{{   url_for('edit',target='/' )    }}" method="post" enctype="multipart/form-data">
+                  <input type="submit" name="change" value="change"/>
+                  <input type="hidden" name="tripid" value="{{ flight.tripid }}"/>
+                  <input type="text" name="month" value="month" required/>
+                  <input type="hidden" name="operation" value="edit">
+            </form>
+        </div>
+        </div>
+        </div>
+         {%endif %}
+         {% endfor %}
+         <h3>add new flight</h3>
+            <form action="{{   url_for('add',target='/' )    }}" method="post" enctype="multipart/form-data">
+                    <input type="submit" name="add" value="add"/>
+                    <br>
+                    <label for="1">origin</label>
+                    <input type="text" id="1" name="origin port" required/>
+                    <br>
+                    <label for="2">destination</label>
+                    <input type="text" id="2" name="destination port" required/>
+                    <br>
+                    <label for="3" id="3">month</label>
+                    <input type="text" name="month" required/>
+                    <br>
+                    <label for="4">threshhold</label>
+                    <input type="text" id="4" name="threshold" required/>
+                    <br>
+                    <input type="hidden" name="operation" value="add">
+            </form>
+    </body>

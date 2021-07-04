@@ -1,0 +1,1 @@
+from flights.views.index import show_index

@@ -1,0 +1,1 @@
+from flights.manager.handy import throw_index
