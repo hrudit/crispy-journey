@@ -84,4 +84,17 @@ def edit():
 
 @flights.app.route('/add',methods=['POST'])
 def add():
-    pass
+    #if not flask.session:
+    #   return flask.redirect(flask.url_for('login'))
+    logged_in_user = 'ypoddar' #flask.session['username']
+    threshhold = float(flask.request.form['threshold'])
+    destination = flask.request.form['destination port']
+    source = flask.request.form['origin port']
+    month = flask.request.form['month']
+    connection = flights.model.get_db()
+    connection.execute(
+        "INSERT INTO trips(source, destination,threshhold,month, owner) "
+        "VALUES(?,?,?,?,?)", (source, destination, threshhold, month, logged_in_user)
+    )
+    url_we_need = flask.request.args.get('target')
+    return flask.redirect(url_we_need)
