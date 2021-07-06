@@ -18,22 +18,26 @@ fi
 # Parse argument.  $1 is the first argument
 case $1 in
   "create")
-    mkdir -p var/uploads
+    if [[ -e var/insta485.sqlite3 || -e var ]]; then
+    echo "var/insta485.sqlite3 or var exists"
+    exit 1
+    fi
+    mkdir var
     sqlite3 var/insta485.sqlite3 < sql/schema.sql
     sqlite3 var/insta485.sqlite3 < sql/data.sql
-    cp sql/uploads/* var/uploads/
     ;;
 
   "destroy")
-    rm -rf var/insta485.sqlite3 var/uploads
+    rm -rf var/insta485.sqlite3
+    rm -rf var
     ;;
 
   "reset")
-    rm -rf var/insta485.sqlite3 var/uploads
-    mkdir -p var/uploads
+    rm -rf var/insta485.sqlite3
+    rm -rf var
+    mkdir var
     sqlite3 var/insta485.sqlite3 < sql/schema.sql
     sqlite3 var/insta485.sqlite3 < sql/data.sql
-    cp sql/uploads/* var/uploads/
     ;;
 
   "dump")
