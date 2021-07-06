@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>
+    newflight
+</title>
+</head>
+
+<body>
+    <form action= "{{url_for('logout') }}" method="post" enctype="multipart/form-data">
+        <input type="submit" name="logout" value="Logout"/>
+      </form>
+    <div style="text-align: right"><a href="/">My Flights</a></div>
+    <h1 style="text-align: center; margin-top: 200px">Flights</h1>
+    <form action="{{   url_for('add',target='/' )    }}" method="post" enctype="multipart/form-data">
+
+        <br>
+        <div style="text-align: center;">
+        <label for="1">origin</label>
+        <input type="text" id="1" name="origin port" required/>                       
+        <label for="2">destination</label>
+        <input type="text" id="2" name="destination port" required/>
+        </div>
+        <br>
+
+        <div style="text-align: center;">
+        <label for="3" id="3">month</label>
+        <input type="text" name="month" required/>
+        </div>
+
+        <br>
+        <div style="text-align: center;">
+        <label for="4">threshhold</label>
+        <input type="text" id="4" name="threshold" required/>   
+        </div>
+        <br>
+
+        <input type="hidden" name="operation" value="add">
+        <br>
+        <div style="text-align: center;">
+            <input type="submit" name="add" value="add"/>
+        </div>
+    </form>
+    
+</body>
+
+</html>
