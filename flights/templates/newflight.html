@@ -42,7 +42,23 @@
             <input type="submit" name="add" value="add"/>
         </div>
     </form>
+
+    {% if (not is_first_load) and (not no_results) %}
+        <div style="text-align: center;">
+            <h3>Sorry, we could not find flights between those specific airports!</h3>
+            <h4>Fortunately we found an alternate route between the same two cities!</h4>
+            <br>
+            <h4>Try searching for Source = {{ src }} and Destination = {{ dest }}.</h4>
+        </div>        
+    {% endif %}
     
+    {% if (not is_first_load) and no_results %}
+    <div style="text-align: center;">
+        <h3>Sorry, we were unable to find any tickets between those two cities!</h3>
+        <h3>Please try a different query!</h3>
+    </div>
+    {% endif %}
 </body>
 
 </html>
+

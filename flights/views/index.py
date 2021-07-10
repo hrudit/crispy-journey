@@ -417,18 +417,136 @@ def add():
     destination = flask.request.form['destination port']
     source = flask.request.form['origin port']
     month = flask.request.form['month']
-    connection = flights.model.get_db()
-    connection.execute(
-        "INSERT INTO trips(source, destination,threshhold,month, owner) "
-        "VALUES(?,?,?,?,?)", (source, destination, threshhold, month, logged_in_user)
-    )
-    url_we_need = flask.request.args.get('target')
-    return flask.redirect(url_we_need)
 
+    # need to request API and find flights for the inputs 
+    # if no flight found, request API for alternate flights in from the 
+    # source CITY (can have multiple airports within the same city) to the destination CITY.
+    # If still no flights, we can just notify the user that there are no flights and that 
+    # they need to check for alternate months or source and destination. 
 
+    datetime_object = datetime.strptime(month, "%B")
+    daata=datetime_object.strftime("2021-%m")
+
+    url = f"https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/{source}-sky/{destination}-sky/{daata}"
+
+    external_headers = {
+        'x-rapidapi-key': "f4a3ba4020msh177be802671ebbfp1b8afcjsne810c5f9d5e4",
+        'x-rapidapi-host': "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com"
+        }
+    
+    response = requests.request("GET", url, headers=external_headers)
+    json_data = json.loads(response.text)
+
+    # we need to account for error of there being no flights between these airports
+    if len(json_data['Quotes'])>0:
+        connection = flights.model.get_db()
+        connection.execute(
+            "INSERT INTO trips(source, destination,threshhold,month, owner) "
+            "VALUES(?,?,?,?,?)", (source, destination, threshhold, month, logged_in_user)
+        )
+        url_we_need = flask.request.args.get('target')
+        return flask.redirect(url_we_need)
+    
+    else:
+        
+        url = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/autosuggest/v1.0/US/USD/en-US/"
+
+        headers = {
+            'x-rapidapi-key': "1c103ffd08mshc8454d0a1fa14cbp13497ajsndb070dd243f1",
+            'x-rapidapi-host': "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com"
+            }
+
+        result_source = None
+        result_dest = None
+        
+        querystring = {"query":source}
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        json_data = json.loads(response.text)
+        
+        source_city = None
+        # loop through all the "Places" and if you see a match with the same "PlaceId" then store the CityID
+        for place in json_data["Places"]:
+            if place["PlaceId"] == f"{source}-sky":
+                source_city = place["CityId"]
+        
+        # What if user enters some invalid airport code and the source or destination city is not found?
+        # then query the city and add all the "PlaceId"s that have the matching "CityId"
+        if source_city:
+            querystring = {"query":source_city}
+        
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        json_data = json.loads(response.text)
+
+        source_airports = []
+
+        for place in json_data["Places"]:
+            if place["CityId"] == source_city:
+                source_airports.append(place["PlaceId"])
+
+        # Do the same for destination
+        querystring = {"query":destination}
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        json_data = json.loads(response.text)
+
+        dest_city = None
+
+        for place in json_data["Places"]:
+            if place["PlaceId"] == f"{destination}-sky":
+                dest_city = place["CityId"]
+        
+        # then query the city and add all the "PlaceId"s that have the matching "CityId"
+        if dest_city:
+            querystring = {"query":dest_city}
+        
+        response = requests.request("GET", url, headers=headers, params=querystring)
+        json_data = json.loads(response.text)
+
+        dest_airports = []
+
+        for place in json_data["Places"]:
+            if place["CityId"] == dest_city:
+                dest_airports.append(place["PlaceId"])
+
+        for source_ap in source_airports:
+            for dest_ap in dest_airports:
+                url = f"https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/{source_ap}/{dest_ap}/{daata}"
+                response = requests.request("GET", url, headers=external_headers)
+                json_data = json.loads(response.text)
+                if len(json_data['Quotes'])>0:
+                    result_source = source_ap
+                    result_dest = dest_ap
+                    break
+
+        if (result_source is None) and (result_dest is None):
+            return flask.redirect(flask.url_for("new", value=1))
+        else:
+            return flask.redirect(flask.url_for("new", value=2, suggest_src=result_source, suggest_dest=result_dest))
+        
+
+@flights.app.route('/newflight/<value>/<suggest_src>/<suggest_dest>/')
+@flights.app.route('/newflight/<value>/')
 @flights.app.route('/newflight/')
-def new(): 
+def new(value=None, suggest_src="default", suggest_dest="default"): 
     print("Reached the function new")
     if not flask.session: 
         return flask.redirect(flask.url_for("login"))
-    return flask.render_template("newflight.html")
+
+    context = {}
+
+    if (value is None and suggest_src=="default" and suggest_dest=="default"):
+        context['is_first_load'] = True
+        context['no_results'] = True
+
+    elif (int(value) == 1):
+        context["no_results"] = True
+        context['is_first_load'] = False
+
+    else:
+        context["no_results"] = False
+        context["src"] = suggest_src
+        context["dest"] = suggest_dest
+        context['is_first_load'] = False
+
+    print(context['is_first_load'], context['no_results'])
+    return flask.render_template("newflight.html", **context)
+
