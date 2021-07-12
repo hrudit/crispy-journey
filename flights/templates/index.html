@@ -14,8 +14,16 @@
             }
         </style>
     </head>
+    <img STYLE = "position:absolute; TOP:50px; LEFT:20px; WIDTH:175px; HEIGHT: 175px"; img src="{{image0}}" >
+    <img STYLE = "position:absolute; TOP:200px; LEFT:20px; WIDTH:175px; HEIGHT: 175px"; img src="{{image1}}" >
 
     <body>
+        <form action= "{{url_for('logout') }}" method="post" enctype="multipart/form-data">
+            <input type="submit" name="logout" value="Logout"/>
+          </form>
+
+          <a href = '/accounts/edit/'>Edit profile</a>
+          <a href = '/newflight/'> Add more flights</a>
         
          <h1 style="margin-left:200px; margin-top:100px;"> Flights for {{name}} </h1>
          <hr>

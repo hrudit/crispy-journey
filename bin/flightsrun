@@ -1,0 +1,15 @@
+#!/bin/bash 
+# flightsrun
+
+# Stop on errors
+# See https://vaneyckt.io/posts/safer_bash_scripts_with_set_euxo_pipefail/
+set -Eeuo pipefail
+set -x
+
+if [ ! -e var/insta485.sqlite3 ]; then
+    ./bin/flightsdb reset
+fi
+
+export FLASK_ENV=development
+export FLASK_APP=flights
+flask run --host 0.0.0.0 --port 8000

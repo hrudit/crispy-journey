@@ -18,10 +18,13 @@ fi
 # Parse argument.  $1 is the first argument
 case $1 in
   "create")
+    if [ -e var/insta485.sqlite3 ]; then
+    echo "var/insta485.sqlite3"
+    exit 1
+    fi
     mkdir -p var/uploads
     sqlite3 var/insta485.sqlite3 < sql/schema.sql
     sqlite3 var/insta485.sqlite3 < sql/data.sql
-    cp sql/uploads/* var/uploads/
     ;;
 
   "destroy")
@@ -33,7 +36,6 @@ case $1 in
     mkdir -p var/uploads
     sqlite3 var/insta485.sqlite3 < sql/schema.sql
     sqlite3 var/insta485.sqlite3 < sql/data.sql
-    cp sql/uploads/* var/uploads/
     ;;
 
   "dump")
