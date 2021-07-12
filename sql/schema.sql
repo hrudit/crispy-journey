@@ -7,6 +7,8 @@ CREATE TABLE users(
   filename VARCHAR(64) NULL,
   password VARCHAR(256) NOT NULL,
   created DATETIME DEFAULT CURRENT_TIMESTAMP,
+  phone_number VARCHAR(64) NULL,
+  verified INTEGER DEFAULT 0,
   PRIMARY KEY(username)
 );
  

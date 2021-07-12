@@ -1,5 +1,5 @@
-INSERT INTO users(username, email,fullname,password)
-VALUES("ypoddar", "@gmail.com","yash poddar",'121212');
+INSERT INTO users(username, email,fullname,password,phone_number)
+VALUES("ypoddar", "@gmail.com","yash poddar",'121212','+919712601603');
 INSERT INTO trips(source, destination,threshhold,month, owner)
 VALUES("SFO", "DTW",550,'November', "ypoddar");
 INSERT INTO trips(source, destination,threshhold,month, owner)

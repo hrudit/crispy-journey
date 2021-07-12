@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>insta485 </title>
+        <style>
+            .profile{
+                width: 50px;
+                height: 50px;
+                border: 2px black;
+                margin-left: auto;
+                margin-right: auto;
+                float: left;
+                
+            }
+        </style>
+    </head>
+
+    <body>
+        <header> <!--this will be the top division-->
+            <p>
+               <a href="/"> </a> 
+              flights
+            </p>
+     
+         </header>
+         <h1 style="margin-left:200px; margin-top:100px;"> VERIFY </h1>
+         <hr>
+
+    
+
+        <form action="{{   url_for('verify',target = '/accounts/login'  )    }}"
+        method="post" enctype="multipart/form-data">
+          <div class="container">
+            <p>Please verify your number by typing in the given code</p>
+            <hr>
+            <label for="code"><b>CODE</b></label>
+            <input type="text" placeholder="- - - - - -" name="code" required>
+        
+              <button type="submit" >submit</button>
+            </div>
+        </form>
+        <form action="{{  url_for('verify',target = '/accounts/create')  }}"
+        method="POST" enctype="multipart/form-data">
+          <div class="container">
+            <p>Press the button to abort verification</p>
+            <hr>
+            <label for="abort"><b>Abort:</b></label>
+            <button type="submit" name='abort'>submit</button>
+            <input type="hidden" name="abort" value="true" /> 
+            </div>
+        </form>
+    </body>

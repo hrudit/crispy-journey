@@ -10,7 +10,9 @@ import hashlib
 import pathlib
 from datetime import datetime
 import pprint
-
+account_sid = flights.app.config.get("TWILIO_ACCOUNT_SID")
+auth_token = flights.app.config.get("TWILIO_AUTH_TOKEN")
+client = Client(account_sid, auth_token)
 
 def set_url(query):
         return f"https://unsplash.com/napi/search/photos?query={query}&xp=&per_page=1&page=1"
@@ -39,7 +41,7 @@ def Scrapper(query):
 
 @flights.app.route('/')
 def show_index():
-    if not flask.session:
+    if not 'username' in flask.session:
         return flask.redirect(flask.url_for('login'))
     logged_in_user = flask.session['username']
     connection = flights.model.get_db()
@@ -87,7 +89,8 @@ def show_index():
     
     image0 = Scrapper("new york city")
     image1 = Scrapper("detroit")
-
+    # here don't we need to add the images for each trip 
+    # should I make that change
 
     context = {'name': logged_in_user, 'flighty': all_trip_best, 
        'image0' : image0, 'image1' : image1}
@@ -114,7 +117,7 @@ def accounts_delete1():
 @flights.app.route('/accounts/create/')
 def create():
     """Create new account creator."""
-    if flask.session:
+    if 'username' in flask.session:
         return flask.redirect(flask.url_for('edit'))
     return flask.render_template('create.html')
 
@@ -134,6 +137,7 @@ def accounts_login(username, password):
     print(cur)
     if(len(cur) == 0):
         #create account
+        print('no such user {} found'.format(username))
         flask.abort(404)
     user_password = cur[0]['password']
     plist = user_password.split('$')
@@ -272,12 +276,14 @@ def accounts():
             flask.request.form['username'],
             flask.request.form['password']
         )
+        
     if flask.request.form['operation'] == 'create':
         full_name = flask.request.form['fullname']
         user_name = flask.request.form['username']
         email_id = flask.request.form['email']
         passcode = flask.request.form['password']
         fileobj = flask.request.files["file"]
+        phone_number = flask.request.form["phone"]
         filename = fileobj.filename
 
         if (len(str(user_name)) == 0
@@ -308,14 +314,26 @@ def accounts():
         if len(cur.fetchall()) != 0:
             flask.abort(409)
 
-        connection.execute(
+        flask.session['phone'] = phone_number
+        vsid = start_verification(phone_number)
+        if vsid is not None:
+            # the verification was sent to the user and the username is valid
+            # redirect to verification check
+            connection.execute(
             "INSERT INTO users"
-            "(username, fullname, email, filename, password)"
-            "VALUES(?,?,?,?,?);",
+            "(username, fullname, email, filename, password,phone_number)"
+            "VALUES(?,?,?,?,?,?);",
             (user_name, full_name, email_id,
-                uuid_basename, password_db_string, )
-        )
-        flask.session['username'] = user_name
+                uuid_basename, password_db_string,phone_number )
+            )
+            return flask.redirect(flask.url_for('verify'))
+
+        # we could not send a request to the twilio api
+        # try recreating the page 
+        # we recreate and we don't store anything in the database beforehand
+        return flask.redirect(flask.url_for('create'))
+        
+        # flask.session['username'] = user_name
 
     if flask.request.form['operation'] == 'edit_account':
         if not flask.session:
@@ -333,9 +351,9 @@ def accounts():
         logged_in_user = flask.session['username']
         connection = flights.model.get_db(); 
         connection.execute(
-        "DELETE FROM "
-        "users WHERE username = ?", (logged_in_user,)
-    )   
+            "DELETE FROM "
+            "users WHERE username = ?", (logged_in_user,)
+        )   
         flask.session.clear(); 
 
     if flask.request.form['operation'] == 'update_password':
@@ -358,7 +376,7 @@ def accounts():
 @flights.app.route('/accounts/edit/')
 def accounts_edit():
     """Edit an existing account."""
-    if not flask.session:
+    if not 'username' in flask.session:
         return flask.redirect(flask.url_for('login'))
 
     logged_in_user = flask.session['username']
@@ -410,7 +428,7 @@ def edit():
 
 @flights.app.route('/add',methods=['POST'])
 def add():
-    if not flask.session:
+    if not 'username' in flask.session:
          return flask.redirect(flask.url_for('login'))
     logged_in_user = flask.session['username']
     threshhold = float(flask.request.form['threshold'])
@@ -528,7 +546,7 @@ def add():
 @flights.app.route('/newflight/')
 def new(value=None, suggest_src="default", suggest_dest="default"): 
     print("Reached the function new")
-    if not flask.session: 
+    if not 'username' in flask.session: 
         return flask.redirect(flask.url_for("login"))
 
     context = {}
@@ -550,3 +568,75 @@ def new(value=None, suggest_src="default", suggest_dest="default"):
     print(context['is_first_load'], context['no_results'])
     return flask.render_template("newflight.html", **context)
 
+
+
+def start_verification(to, channel='sms'):
+    if channel not in ('sms', 'call'):
+        channel = 'sms'
+
+    service = flights.app.config.get("VERIFICATION_SID")
+
+    verification = client.verify \
+        .services(service) \
+        .verifications \
+        .create(to=to, channel=channel)
+    
+    return verification.sid
+
+def check_verification(phone, code):
+    service = flights.app.config.get("VERIFICATION_SID")
+    
+    try:
+        verification_check = client.verify \
+            .services(service) \
+            .verification_checks \
+            .create(to=phone, code=code)
+
+        if verification_check.status == "approved":
+            db = flights.model.get_db()
+            db.execute(
+                'UPDATE users SET verified = 1 WHERE phone_number = ?', 
+                (phone,)
+            )
+            db.commit()
+            print('Your phone number has been verified! Please login to continue.')
+            # here we consider our user logged in and will use the target to redirect them
+            # to the new flights page
+            # flask.session['username']
+            # we need to force them to login after verification!
+            return flask.redirect(flask.url_for('login'))
+        else:
+            flask.session.clear() #remove phone number 
+            print('some kind of error')
+    except Exception as e:
+        flask.session.clear() #remove phone number
+        print("Error validating code: {}".format(e))
+
+    return flask.redirect(flask.url_for('verify'))
+
+@flights.app.route('/verify', methods=('GET', 'POST'))
+def verify():
+    """Verify a user on registration with their phone number"""
+    if request.method == 'POST':
+        phone = flask.session.get('phone')
+        if 'abort' in flask.request.form:
+            # we want to remove data and clear session
+            # we want to go to the create page now
+            # clearing the phone session too incase of wrong login
+            # we know the phone number now 
+            connection = flights.model.get_db()
+            connection.execute(
+                "DELETE FROM "
+                "users WHERE phone_number = ? ", (phone,)
+            )
+            # we added their information before starting verification
+            flask.session.clear()
+            return flask.redirect(flask.request.args.get('target'))
+            # here target is the create page so we get a fresh start 
+
+
+        # we don't want to reach here if they chose to abort
+        code = flask.request.form['code']
+        return check_verification(phone, code)
+    # need to add a route to abort verification and clear data base
+    return flask.render_template('verify.html')
