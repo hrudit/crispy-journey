@@ -21,7 +21,7 @@ def get_db():
     """
     if 'sqlite_db' not in flask.g:
         db_filename = flights.app.config['DATABASE_FILENAME']
-        flask.g.sqlite_db = sqlite3.connect(str(db_filename))
+        flask.g.sqlite_db = sqlite3.connect(str(db_filename),check_same_thread=False)
         flask.g.sqlite_db.row_factory = dict_factory
 
         # Foreign keys have to be enabled per-connection.  This is an sqlite3

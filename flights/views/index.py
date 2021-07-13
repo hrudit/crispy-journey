@@ -16,7 +16,7 @@ from flaskthreads import AppContextThread
 account_sid = flights.app.config.get("TWILIO_ACCOUNT_SID")
 auth_token = flights.app.config.get("TWILIO_AUTH_TOKEN")
 client = Client(account_sid, auth_token)
-
+lis = []
 
 
 # Find your Account SID and Auth Token at twilio.com/console
@@ -72,7 +72,7 @@ def send_messages():
                         date_current =datetime.now()
                         date_prev = datetime.strptime(trip['date_sent'],'%m/%d/%y')
                         n = date_current - date_prev
-                        if n.days()>2 :
+                        if n.days>2 :
                             account_sid = flights.app.config['TWILIO_ACCOUNT_SID']
                             auth_token = flights.app.config['TWILIO_AUTH_TOKEN']
                             flient = Client(account_sid, auth_token)
@@ -84,6 +84,7 @@ def send_messages():
                                                     )
 
                             print(message.sid)
+                            print('is sent stuck here')
                             n = datetime.now()
 
                             while True:
@@ -110,15 +111,20 @@ def send_messages():
 
                         print(message.sid)
                         n = datetime.now()
-
+                        print('owner is ',trip['owner'], )
                         while True:
                                 try:
                                     connection_one.execute(
-                                        "UPDATE trips SET date_sent = ? WHERE owner = ?",(n.strftime('%m/%d/%y'),trip['owner'])
+                                        "UPDATE trips "
+                                        "SET date_sent = ? "
+                                        "WHERE owner = ? ",(n.strftime('%m/%d/%y'),trip['owner'], )
                                     )
                                     connection_one.execute(
-                                        "UPDATE trips SET is_sent = ? WHERE owner = ?",(1,trip['owner'])
+                                        "UPDATE trips "
+                                        "SET is_sent = ? "
+                                        "WHERE owner = ? ",(1,trip['owner'], )
                                     )
+                                    connection_one.commit()
                                     break
                                 except sqlite3.OperationalError:
                                     print("database locked")
@@ -158,8 +164,11 @@ def Scrapper(query):
 
 @flights.app.route('/')
 def show_index():
-    t = AppContextThread(target=send_messages)
-    t.start()
+    if len(lis)==0:
+        t = AppContextThread(target=send_messages)
+        t.start()
+        lis.append(1)
+
     if not 'username' in flask.session:
         return flask.redirect(flask.url_for('login'))
 
@@ -699,7 +708,7 @@ def start_verification(to, channel='sms'):
         channel = 'sms'
 
     service = flights.app.config.get("VERIFICATION_SID")
-
+    print('number is',to)
     verification = client.verify \
         .services(service) \
         .verifications \
