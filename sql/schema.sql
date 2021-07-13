@@ -9,7 +9,7 @@ CREATE TABLE users(
   created DATETIME DEFAULT CURRENT_TIMESTAMP,
   phone_number VARCHAR(64) NULL,
   verified INTEGER DEFAULT 0,
-  PRIMARY KEY(username)
+  PRIMARY KEY(username,phone_number)
 );
  
 CREATE TABLE trips(

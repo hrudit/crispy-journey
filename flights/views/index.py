@@ -603,8 +603,17 @@ def check_verification(phone, code):
             # here we consider our user logged in and will use the target to redirect them
             # to the new flights page
             # flask.session['username']
+
             # we need to force them to login after verification!
-            return flask.redirect(flask.url_for('login'))
+            #return flask.redirect(flask.url_for('login'))
+            cur=db.execute(
+                'SELECT username FROM users WHERE phone_number = ?', 
+                (phone,)
+            )
+            data = cur.fetchall()
+            username = data[0]['username']
+            flask.session['username']=username #essentially logging the person in 
+            return flask.redirect(flask.url_for('new'))
         else:
             flask.session.clear() #remove phone number 
             print('some kind of error')
