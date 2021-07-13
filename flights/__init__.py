@@ -14,6 +14,8 @@ app.config.from_object('flights.config')
 # $ export INSTA485_SETTINGS=secret_key_config.py
 app.config.from_envvar('INSTA485_SETTINGS', silent=True)
 
+app.debug = False
+
 # Tell our app about views and model.  This is dangerously close to a
 # circular import, which is naughty, but Flask was designed that way.
 # (Reference http://flask.pocoo.org/docs/patterns/packages/)  We're

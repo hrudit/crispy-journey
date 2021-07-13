@@ -10,6 +10,9 @@ import hashlib
 import pathlib
 from datetime import datetime
 import pprint
+import threading
+import time
+from flaskthreads import AppContextThread
 account_sid = flights.app.config.get("TWILIO_ACCOUNT_SID")
 auth_token = flights.app.config.get("TWILIO_AUTH_TOKEN")
 client = Client(account_sid, auth_token)
@@ -19,15 +22,26 @@ client = Client(account_sid, auth_token)
 # Find your Account SID and Auth Token at twilio.com/console
 # and set the environment variables. See http://twil.io/secure
 
-
 def send_messages():
     while(True):
-        connection = flights.model.get_db()
-        cur = connection.execute(
-            "SELECT * FROM trips "
-        )
-        data = cur.fetchall()
+        connection_one = flights.model.get_db()
+        while True:
+            try:
+                cur = connection_one.execute(
+                    "SELECT * FROM trips "
+                )
+                data = cur.fetchall()
+                break
+            except flights.model.sqlite3.OperationalError:
+                print("database locked")
+
+        
+
+
         for trip in data:
+            long_month_name = trip['month'] #"December" we need the full name
+            datetime_object = datetime.strptime(long_month_name, "%B")
+            daata=datetime_object.strftime("2021-%m")
             url = f"https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/{trip['source']}-sky/{trip['destination']}-sky/{daata}"
 
 
@@ -42,57 +56,79 @@ def send_messages():
             if len(json_data['Quotes'])>0:
                 min_price = json_data['Quotes'][0]['MinPrice']
                 if min_price<= trip['threshhold']:
-                    beta = connection.execute(
+
+                    while True:
+                        try:
+                            beta = connection_one.execute(
                                 "SELECT * FROM users "
                                 "WHERE username = ? ",(trip['owner'],)
-                           )
+                            )
+                            beta = beta.fetchall()
+                            break
+                        except sqlite3.OperationalError:
+                            print("database locked")
+                    
                     if trip['is_sent'] :
                         date_current =datetime.now()
                         date_prev = datetime.strptime(trip['date_sent'],'%m/%d/%y')
                         n = date_current - date_prev
                         if n.days()>2 :
-                            account_sid = flights.config['TWILIO_ACCOUNT_SID']
-                            auth_token = flights.config['TWILIO_AUTH_TOKEN']
+                            account_sid = flights.app.config['TWILIO_ACCOUNT_SID']
+                            auth_token = flights.app.config['TWILIO_AUTH_TOKEN']
                             flient = Client(account_sid, auth_token)
-                            messager = f'Hey {trip['owner']} your flight from {trip['source']} to {trip['destination']} has gone below your threshold of ${trip['threshhold']}!'
+                            messager = 'Hey {} your flight from {} to {} has gone below your threshold of ${}!'.format(trip['owner'], trip['source'], trip['destination'], trip['threshhold'])                            
                             message = flient.messages.create(
                                                         body=messager,
-                                                        from_='+18329816613',
+                                                        from_=flights.app.config['TWILIO_PHONE_NUMBER'],
                                                         to=beta[0]['phone_number']
                                                     )
 
                             print(message.sid)
                             n = datetime.now()
-                            connection.execute(
-                                "UPDATE trips SET date_sent = ? WHERE owner = ?",(n.strftime('%m/%d/%y'),trip['owner'])
-                            )
+
+                            while True:
+                                try:
+                                    connection_one.execute(
+                                        "UPDATE trips SET date_sent = ? WHERE owner = ?",(n.strftime('%m/%d/%y'),trip['owner'])
+                                    )
+                                    break
+                                except sqlite3.OperationalError:
+                                    print("database locked")
 
 
 
                     else:
-                        account_sid = flights.config['TWILIO_ACCOUNT_SID']
-                        auth_token = flights.config['TWILIO_AUTH_TOKEN']
+                        account_sid = flights.app.config['TWILIO_ACCOUNT_SID']
+                        auth_token = flights.app.config['TWILIO_AUTH_TOKEN']
                         flient = Client(account_sid, auth_token)
-                        messager = f'Hey {trip['owner']} your flight from {trip['source']} to {trip['destination']} has gone below your threshold of ${trip['threshhold']}!'
+                        messager = 'Hey {} your flight from {} to {} has gone below your threshold of ${}!'.format(trip['owner'], trip['source'], trip['destination'], trip['threshhold'])
                         message = flient.messages.create(
                                                     body=messager,
-                                                    from_='+18329816613',
+                                                    from_=flights.app.config['TWILIO_PHONE_NUMBER'],
                                                     to=beta[0]['phone_number']
                                                 )
 
                         print(message.sid)
                         n = datetime.now()
-                        connection.execute(
-                            "UPDATE trips SET date_sent = ? WHERE owner = ?",(n.strftime('%m/%d/%y'),trip['owner'])
-                        )
-                        connection.execute(
-                            "UPDATE trips SET is_sent = ? WHERE owner = ?",(1,trip['owner'])
-                        )
+
+                        while True:
+                                try:
+                                    connection_one.execute(
+                                        "UPDATE trips SET date_sent = ? WHERE owner = ?",(n.strftime('%m/%d/%y'),trip['owner'])
+                                    )
+                                    connection_one.execute(
+                                        "UPDATE trips SET is_sent = ? WHERE owner = ?",(1,trip['owner'])
+                                    )
+                                    break
+                                except sqlite3.OperationalError:
+                                    print("database locked")
 
 
             
             else:
                 continue
+
+        time.sleep(30)
 
         
 def set_url(query):
@@ -122,8 +158,12 @@ def Scrapper(query):
 
 @flights.app.route('/')
 def show_index():
+    t = AppContextThread(target=send_messages)
+    t.start()
     if not 'username' in flask.session:
         return flask.redirect(flask.url_for('login'))
+
+
     logged_in_user = flask.session['username']
     connection = flights.model.get_db()
     cur = connection.execute(
@@ -430,7 +470,7 @@ def accounts():
         )
     if flask.request.form['operation'] == 'delete':
         logged_in_user = flask.session['username']
-        connection = flights.model.get_db(); 
+        connection = flights.model.get_db() 
         connection.execute(
             "DELETE FROM "
             "users WHERE username = ?", (logged_in_user,)
@@ -539,8 +579,11 @@ def add():
     # we need to account for error of there being no flights between these airports
     if len(json_data['Quotes'])>0:
         connection = flights.model.get_db()
+
+        print(logged_in_user)
+
         connection.execute(
-            "INSERT INTO trips(source, destination,threshhold,month, owner) "
+            "INSERT INTO trips(source,destination,threshhold,month,owner) "
             "VALUES(?,?,?,?,?)", (source, destination, threshhold, month, logged_in_user)
         )
         url_we_need = flask.request.args.get('target')
