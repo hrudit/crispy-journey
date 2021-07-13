@@ -11,7 +11,7 @@ CREATE TABLE users(
   verified INTEGER DEFAULT 0,
   PRIMARY KEY(username,phone_number)
 );
- 
+
 CREATE TABLE trips(
     tripid INTEGER NOT NULL,
     source VARCHAR(64) NOT NULL,
@@ -19,6 +19,8 @@ CREATE TABLE trips(
     threshhold REAL NOT NULL,
     month VARCHAR(64) NOT NULL,
     owner VARCHAR(20) NOT NULL,
+    is_sent INTEGER DEFAULT 0,
+    date_sent VARCHAR(20),
     PRIMARY KEY(tripid),
     FOREIGN KEY (owner) REFERENCES users(username)
     ON DELETE CASCADE ON UPDATE CASCADE

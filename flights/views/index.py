@@ -14,6 +14,87 @@ account_sid = flights.app.config.get("TWILIO_ACCOUNT_SID")
 auth_token = flights.app.config.get("TWILIO_AUTH_TOKEN")
 client = Client(account_sid, auth_token)
 
+
+
+# Find your Account SID and Auth Token at twilio.com/console
+# and set the environment variables. See http://twil.io/secure
+
+
+def send_messages():
+    while(True):
+        connection = flights.model.get_db()
+        cur = connection.execute(
+            "SELECT * FROM trips "
+        )
+        data = cur.fetchall()
+        for trip in data:
+            url = f"https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/USD/en-US/{trip['source']}-sky/{trip['destination']}-sky/{daata}"
+
+
+            headers = {
+                'x-rapidapi-key': "f4a3ba4020msh177be802671ebbfp1b8afcjsne810c5f9d5e4",
+                'x-rapidapi-host': "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com"
+            }
+            
+            response = requests.request("GET", url, headers=headers)
+            json_data = json.loads(response.text)
+            # we need to account for error of there being no flights between these airports
+            if len(json_data['Quotes'])>0:
+                min_price = json_data['Quotes'][0]['MinPrice']
+                if min_price<= trip['threshhold']:
+                    beta = connection.execute(
+                                "SELECT * FROM users "
+                                "WHERE username = ? ",(trip['owner'],)
+                           )
+                    if trip['is_sent'] :
+                        date_current =datetime.now()
+                        date_prev = datetime.strptime(trip['date_sent'],'%m/%d/%y')
+                        n = date_current - date_prev
+                        if n.days()>2 :
+                            account_sid = flights.config['TWILIO_ACCOUNT_SID']
+                            auth_token = flights.config['TWILIO_AUTH_TOKEN']
+                            flient = Client(account_sid, auth_token)
+                            messager = f'Hey {trip['owner']} your flight from {trip['source']} to {trip['destination']} has gone below your threshold of ${trip['threshhold']}!'
+                            message = flient.messages.create(
+                                                        body=messager,
+                                                        from_='+18329816613',
+                                                        to=beta[0]['phone_number']
+                                                    )
+
+                            print(message.sid)
+                            n = datetime.now()
+                            connection.execute(
+                                "UPDATE trips SET date_sent = ? WHERE owner = ?",(n.strftime('%m/%d/%y'),trip['owner'])
+                            )
+
+
+
+                    else:
+                        account_sid = flights.config['TWILIO_ACCOUNT_SID']
+                        auth_token = flights.config['TWILIO_AUTH_TOKEN']
+                        flient = Client(account_sid, auth_token)
+                        messager = f'Hey {trip['owner']} your flight from {trip['source']} to {trip['destination']} has gone below your threshold of ${trip['threshhold']}!'
+                        message = flient.messages.create(
+                                                    body=messager,
+                                                    from_='+18329816613',
+                                                    to=beta[0]['phone_number']
+                                                )
+
+                        print(message.sid)
+                        n = datetime.now()
+                        connection.execute(
+                            "UPDATE trips SET date_sent = ? WHERE owner = ?",(n.strftime('%m/%d/%y'),trip['owner'])
+                        )
+                        connection.execute(
+                            "UPDATE trips SET is_sent = ? WHERE owner = ?",(1,trip['owner'])
+                        )
+
+
+            
+            else:
+                continue
+
+        
 def set_url(query):
         return f"https://unsplash.com/napi/search/photos?query={query}&xp=&per_page=1&page=1"
 
