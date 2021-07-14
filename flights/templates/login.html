@@ -1,33 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>insta 485</title>
-        <header> <!--this will be the top division-->
-            <p>
-               <a href="/"> </a> 
-              flights
-            </p>
-         </header>
+        <title>crispyjourney.com</title>
+            <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/style-login.css') }}">
          <hr>
     </head>
 
     <body>
+      <style>
+        input[type='text'] { font-size: 50px; color:gray }
+        input[type='password'] { font-size: 50px; color:gray }
+        </style>
+  
+      <img src = "/uploads/login-passport.png" class = "login-passport"> 
+      <img src = "/uploads/login-nav.png" class = "login-navbar">
+      <img src = "/uploads/login-logo.png" class = "login-logo">
+      <div class = "rcorners1"></div>
+      <div class = "rcorners2"></div>
+
        
     <form action= "{{   url_for('accounts',target='/newflight/')    }}" method="post" 
             enctype="multipart/form-data">
-        <div class="container">
-          <label for="uname"><b>Username</b></label>
-          <input type="text" placeholder="Enter Username" name="username" required>
-      
-          <label for="psw"><b>Password</b></label>
-          <input type="password" placeholder="Enter Password" name="password" required>
-      
-          <button type="submit">Login</button>
-        </div>
+            <input type="text" placeholder="Username" name="username" class = "username" required>
+          <input type="password" placeholder="Password" name="password" class = "password" required>
+          <button type="submit"><img src = "/uploads/login-button.png" class = "login-button"></button>
         <input type="hidden" name="operation" value="login">
       </form>
 
-      <p>
-          Dont have an account <a href='/accounts/create/' >Signup</a>
-      </p>
+      <a href='/accounts/create/'><img src = "/uploads/login-signup.png" class = "login-signup"></a>
     </body>

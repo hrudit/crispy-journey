@@ -252,7 +252,7 @@ def accounts_delete1():
 def create():
     """Create new account creator."""
     if 'username' in flask.session:
-        return flask.redirect(flask.url_for('edit'))
+        return flask.redirect(flask.url_for('accounts_edit'))
     return flask.render_template('create.html')
 
 
@@ -288,6 +288,25 @@ def accounts_login(username, password):
         flask.abort(404)
     print("made the login page")
     flask.session['username'] = username
+
+@flights.app.route('/uploads/<img_src>')
+def uploads(img_src):
+    """Find uploads for images."""
+    print("Reached uploads")
+    #if not flask.session:
+        #print("Reached abort")
+        #flask.abort(403)
+    path_file = str(flights.app.config["UPLOAD_FOLDER"]/img_src)
+    print("The path file is")
+    print(path_file)
+    path_file = pathlib.Path(path_file)
+    if not path_file.exists():
+        flask.abort(404)
+
+    return flask.send_from_directory(
+        flights.app.config["UPLOAD_FOLDER"],
+        img_src, as_attachment=True
+    )
 
 @flights.app.route('/accounts/login')
 def login():
