@@ -35,9 +35,6 @@ def send_messages():
             except flights.model.sqlite3.OperationalError:
                 print("database locked")
 
-        
-
-
         for trip in data:
             long_month_name = trip['month'] #"December" we need the full name
             datetime_object = datetime.strptime(long_month_name, "%B")
@@ -92,6 +89,7 @@ def send_messages():
                                     connection_one.execute(
                                         "UPDATE trips SET date_sent = ? WHERE owner = ?",(n.strftime('%m/%d/%y'),trip['owner'])
                                     )
+                                    connection_one.commit()
                                     break
                                 except sqlite3.OperationalError:
                                     print("database locked")
@@ -221,8 +219,14 @@ def show_index():
     image1 = Scrapper("detroit")
     # here don't we need to add the images for each trip 
     # should I make that change
+    cur = connection.execute(
+        "SELECT fullname FROM users "
+        "WHERE username = ?", (logged_in_user,)
+    )
+    cur = cur.fetchall()
+    first_name = cur[0]['fullname']
 
-    context = {'name': logged_in_user, 'flighty': all_trip_best, 
+    context = {'name': first_name, 'flighty': all_trip_best, 
        'image0' : image0, 'image1' : image1}
     return flask.render_template("index.html", **context)
 
@@ -292,35 +296,13 @@ def login():
         flask.redirect(flask.url_for('new'))
     return flask.render_template('login.html')
 
-def accounts_edit_1(logged_in_user, fileobj, filename, email, full_name):
+def accounts_edit_1(logged_in_user, email, full_name):
     connection = flights.model.get_db()
-    if len(str(filename)) == 0:
-        cur = connection.execute(
-            "UPDATE users "
-            "SET fullname = ?, email = ? WHERE "
-            "username = ?",
-            (full_name, email, logged_in_user,)
-        )
-    else:
-        cur = connection.execute(
-            "SELECT filename FROM users "
-            "WHERE username = ? ", (logged_in_user, )
-        )
-        filename_to_delete = cur.fetchall()
-        filename_to_delete1 = filename_to_delete[0]['filename']
-        os.remove("var/uploads/" + filename_to_delete1)
-
-        uuid_basename = "{stem}{suffix}".format(
-            stem=uuid.uuid4().hex,
-            suffix=pathlib.Path(filename).suffix
-        )
-        path = flights.app.config["UPLOAD_FOLDER"]/uuid_basename
-        fileobj.save(path)
-        cur = connection.execute(
-            "UPDATE users "
-            "SET filename = ?, fullname = ?, email = ? WHERE "
-            "username = ?",
-            (uuid_basename, full_name, email, logged_in_user, )
+    cur = connection.execute(
+        "UPDATE users "
+        "SET fullname = ?, email = ? WHERE "
+        "username = ?",
+        (full_name, email, logged_in_user,)
         )
 
 def accounts_update_password(
@@ -412,19 +394,13 @@ def accounts():
         user_name = flask.request.form['username']
         email_id = flask.request.form['email']
         passcode = flask.request.form['password']
-        fileobj = flask.request.files["file"]
         phone_number = flask.request.form["phone"]
-        filename = fileobj.filename
 
         if (len(str(user_name)) == 0
                 or len(str(full_name)) == 0 or len(str(email_id)) == 0 or
-                len(str(passcode)) == 0 or len(str(filename)) == 0):
+                len(str(passcode)) == 0):
             flask.abort(400)
-        uuid_basename = "{stem}{suffix}".format(
-            stem=uuid.uuid4().hex,
-            suffix=pathlib.Path(filename).suffix
-        )
-        fileobj.save(flights.app.config["UPLOAD_FOLDER"]/uuid_basename)
+
         pass_word = flask.request.form['password']
         salt = uuid.uuid4().hex
         hash_obj = hashlib.new('sha512')
@@ -451,10 +427,10 @@ def accounts():
             # redirect to verification check
             connection.execute(
             "INSERT INTO users"
-            "(username, fullname, email, filename, password,phone_number)"
-            "VALUES(?,?,?,?,?,?);",
+            "(username, fullname, email, password, phone_number)"
+            "VALUES(?,?,?,?,?);",
             (user_name, full_name, email_id,
-                uuid_basename, password_db_string,phone_number )
+                password_db_string,phone_number )
             )
             return flask.redirect(flask.url_for('verify'))
 
@@ -468,12 +444,8 @@ def accounts():
     if flask.request.form['operation'] == 'edit_account':
         if not flask.session:
             flask.abort(403)
-        # fileobj = flask.request.files["file"]
-        # filename = fileobj.filename
         accounts_edit_1(
             flask.session['username'],
-            flask.request.files["file"],
-            flask.request.files["file"].filename,
             flask.request.form['email'],
             flask.request.form['fullname']
         )
@@ -519,12 +491,10 @@ def accounts_edit():
     data = cur.fetchall()
     data = data[0]
     user_name = data['username']
-    file_name = data['filename']
     full_name = data['fullname']
     email_id = data['email']
     context = {
         "username": user_name,
-        "filename": file_name,
         "fullname": full_name,
         "email": email_id
     }
