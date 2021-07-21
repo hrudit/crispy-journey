@@ -1,0 +1,90 @@
+.create-box{
+    position: absolute;
+    width: 30%;
+    height:80%;
+    left:468px;
+    top:20px; 
+}
+.create-bottom-img{
+    position: absolute;
+    bottom:5px; 
+    left: 500px;
+    width: 25%;
+    height: 13%;
+}
+.login-logo{
+    position: absolute;
+    left: 20px;
+    width: 10%;
+    top:20px; 
+    height: 10%;
+}
+.create-loginpage{
+    position: absolute;
+    right: 20px;
+    width: 15%;
+    top:20px; 
+    height: 9%;
+}
+
+.username{
+    position: absolute;
+    left:530px;
+    top:65px; 
+    font-family: source-code-pro;
+    font-size: 25;
+    width:15%;
+    color:#808080
+}
+.fullname{
+    position: absolute;
+    left:530px;
+    top:165px; 
+    font-family: source-code-pro;
+    font-size: 25;
+    width:15%;
+    color:#808080
+}
+.email{
+    position: absolute;
+    left:530px;
+    top:265px; 
+    font-family: source-code-pro;
+    font-size: 25;
+    width:15%;
+    color:#808080
+}
+.email{
+    position: absolute;
+    left:530px;
+    top:265px; 
+    font-family: source-code-pro;
+    font-size: 25;
+    width:15%;
+    color:#808080
+}
+.phone{
+    position: absolute;
+    left:530px;
+    top:365px; 
+    font-family: source-code-pro;
+    font-size: 25;
+    width:15%;
+    color:#808080
+}
+.password{
+    position: absolute;
+    left:530px;
+    top:465px; 
+    font-family: source-code-pro;
+    font-size: 25;
+    width:15%;
+    color:#808080
+}
+
+
+@font-face{
+    font-family: 'source-code-pro';
+    src:url(source-code-pro/SourceCodePro-Black.otf); 
+    color:#808080
+}

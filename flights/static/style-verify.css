@@ -1,0 +1,57 @@
+.verify-abort-text{
+    position: absolute;
+    width: 30%;
+    height: 70%;
+    top: 20px;
+    left: 450px;
+}
+.container{
+    position: absolute;
+    left:400px; 
+    font-family: source-code-pro;
+    color: 	#1c3bbf;
+}
+.login-logo{
+    position: absolute;
+    left: 20px;
+    width: 10%;
+    top:20px; 
+    height: 10%;
+}
+.code{
+    position: absolute;
+    top:200px; 
+    font-size: 50px;
+    left:550px; 
+    width:15%;
+
+}
+.verify-abort{
+    position: absolute;
+    width: 10%;
+    height:10%;
+    bottom: 50px;
+    left:575px;
+}
+
+.verify-box{
+    position: absolute;
+    bottom:100px; 
+    left: 450px;
+    top:100px;
+    width: 30%;
+    height: 50%; 
+}
+.verify-submit{
+    position: absolute;
+    left: 575px;
+    width: 10%;
+    bottom:150px; 
+    height: 10%;
+}
+
+
+@font-face{
+    font-family: 'source-code-pro';
+    src:url(source-code-pro/SourceCodePro-Black.otf); 
+}

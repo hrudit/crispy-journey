@@ -166,7 +166,6 @@ def show_index():
         t = AppContextThread(target=send_messages)
         t.start()
         lis.append(1)
-
     if not 'username' in flask.session:
         return flask.redirect(flask.url_for('login'))
 
@@ -219,6 +218,7 @@ def show_index():
     image1 = Scrapper("detroit")
     # here don't we need to add the images for each trip 
     # should I make that change
+    print(logged_in_user)
     cur = connection.execute(
         "SELECT fullname FROM users "
         "WHERE username = ?", (logged_in_user,)
@@ -734,6 +734,7 @@ def check_verification(phone, code):
             )
             data = cur.fetchall()
             username = data[0]['username']
+            flask.session.clear()
             flask.session['username']=username #essentially logging the person in 
             return flask.redirect(flask.url_for('new'))
         else:
