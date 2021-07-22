@@ -1,108 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+    
+        
     <head>
-        <title>flighty</title>
-        <style>
-            .profile{
-                width: 50px;
-                height: 50px;
-                border: 2px black;
-                margin-left: auto;
-                margin-right: auto;
-                float: left;
-                
-            }
-        </style>
+        <title>crispyjourney.com</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static', filename = 'style-index.css') }}">
     </head>
-    <img STYLE = "position:absolute; TOP:50px; LEFT:20px; WIDTH:175px; HEIGHT: 175px"; img src="{{image0}}" >
-    <img STYLE = "position:absolute; TOP:200px; LEFT:20px; WIDTH:175px; HEIGHT: 175px"; img src="{{image1}}" >
+    
+    <img src = "/uploads/login-logo.png" class = "login-logo">
 
     <body>
         <form action= "{{url_for('logout') }}" method="post" enctype="multipart/form-data">
-            <input type="submit" name="logout" value="Logout"/>
-          </form>
+            <input type="hidden" name="logout" value="Logout" />
+            <input type="image" src="/uploads/index-logout.png" class="logout-logo" alt="Submit" />
+        </form>
 
-          <a href = '/accounts/edit/'>Edit profile</a>
-          <a href = '/newflight/'> Add more flights</a>
-        
-         <h1 style="margin-left:200px; margin-top:100px;"> Flights for {{name}} </h1>
-         <hr>
-         {% for flight in flighty %}
-         {% if flight.price !=-1 %}
-         <div style="width:500px; height:250px; border:2px ;border-style:solid ; border-color:black;">
-            <div style="width:500px; height:100px;">
-               <p>your flight goes from {{ flight.start }} to {{flight.end}} in {{flight.month}} </p>
-               <p>your flight price is {{flight.price}} $</p>
-                {% if flight.less_than %}
-                   <p>we got a deal!</p> 
-                {% else %} 
-                   <p>well keep looking </p>
-                {% endif %} 
-            </div>
-                <div style="width:500px; height:20px;">
-                    
-                    delete
-                    <form action="{{   url_for('delete',target='/' )    }}" method="post" enctype="multipart/form-data">
-                          <input type="submit" name="delete" value="delete"/>
-                          <input type="hidden" name="tripid" value="{{ flight.tripid }}"/>
-                          <input type="hidden" name="operation" value="delete" />
-                    </form>
-                    
-                </div>
-                <div style="width:500px; height:50px;"></div>
-                    edit this flight
-                    <form action="{{   url_for('edit',target='/' )    }}" method="post" enctype="multipart/form-data">
-                          <input type="submit" name="change" value="change"/>
-                          <input type="hidden" name="tripid" value="{{ flight.tripid }}"/>
-                          <input type="text" name="month" required/>
-                          <input type="hidden" name="operation" value="edit">
-                    </form>
-                </div>
-              
-         </div>
-         <br>
-         {% else %}
-         <div style="width:500px; height:200px; border:2px ;border-style:solid ; border-color:black;">
-         <p>No flight goes from {{ flight.start }} to {{flight.end}} in {{flight.month}} </p>
-         <div style="width:500px; height:20px;">
-                    
-            delete
+         <a href = '/newflight/'><img src = "/uploads/index-add-flight.png" class="add-logo"></a>
+          <a href = '/accounts/edit/' > <img src = "/uploads/index-edit.png" class="edit-logo"></a>
+         <!--<div class="trip-div">
+             <div class="trip-left-image" style="background-image: url(/uploads/goa.jpeg); background-repeat: no-repeat;background-size:cover;"></div>
+             <div class="trip-right-image" style="background-image: url(/uploads/london_2.jpeg);background-repeat: no-repeat;background-size:cover;"></div>
+             <img src="/uploads/index-main-bar.png" class = "yellow-box">
+             <img src="/uploads/index-bar.png" class = "green-box">
+             <div class="to_from_box">  <pre>LONDON                       to                       SF</pre></div>
+             <div class="to_from_box_2"><pre>                        noVEMER 20221                   </pre></div>
+             <a href = '/accounts/edit/'><img src = "/uploads/index-add-flight.png" class="edit-second"></a>
+             <a href = '/accounts/edit/'><img src = "/uploads/index-delete.png" class="delete"></a>
+             <div class="price">100$</div>
+             <div class="result">result$</div>
+         </div>-->
+         {% for flight in flighty %} 
+         <div style="margin-top: 30px;"></div>
+         <div class="trip-div">
+            <div class="trip-left-image" style="background-image: url(/uploads/goa.jpeg); background-repeat: no-repeat;background-size:cover;"></div>
+            <div class="trip-right-image" style="background-image: url(/uploads/london_2.jpeg);background-repeat: no-repeat;background-size:cover;"></div>
+            <img src="/uploads/index-main-bar.png" class = "yellow-box">
+            <img src="/uploads/index-bar.png" class = "green-box">
+            <p class="start">{{ flight.start }}</p>
+            <p class="end">{{flight.end}}</p>
+            <p class="to_box">to</p>
+            <p class="date_box">{{flight.month}}</p> 
+            <!--<a href = '/accounts/edit/'><img src = "/uploads/index-add-flight.png" class="edit-second"></a>-->
             <form action="{{   url_for('delete',target='/' )    }}" method="post" enctype="multipart/form-data">
-                  <input type="submit" name="delete" value="delete"/>
-                  <input type="hidden" name="tripid" value="{{ flight.tripid }}"/>
-                  <input type="hidden" name="operation" value="delete" />
+                <input type="hidden" name="delete" value="delete"/>
+                <input type="hidden" name="tripid" value="{{ flight.tripid }}"/>
+                <input type="hidden" name="operation" value="delete" />
+                <input type="image" src="/uploads/index-delete.png" class="delete" alt="Submit" />
             </form>
-        </div>
-        <div style="width:500px; height:50px;"></div>
-            edit this flight
-            <form action="{{   url_for('edit',target='/' )    }}" method="post" enctype="multipart/form-data">
-                  <input type="submit" name="change" value="change"/>
-                  <input type="hidden" name="tripid" value="{{ flight.tripid }}"/>
-                  <input type="text" name="month" value="month" required/>
-                  <input type="hidden" name="operation" value="edit">
-            </form>
-        </div>
-        </div>
-        </div>
-        <br>
+            {% if flight.price !=-1 %}
+
+            <div class="price">{{ flight.price}} $</div>
+
+            {% if flight.less_than %}
+                <div class="result">We got a deal!</div>
+            {% else %} 
+                <div class="result">result</div>
+            {% endif %} 
+
+            {% else %}
+            <div class="price">No flights Found :(</div>
          {%endif %}
-         {% endfor %}
-         <h3>add new flight</h3>
-            <form action="{{   url_for('add',target='/' )    }}" method="post" enctype="multipart/form-data">
-                    <input type="submit" name="add" value="add"/>
-                    <br>
-                    <label for="1">origin</label>
-                    <input type="text" id="1" name="origin port" required/>
-                    <br>
-                    <label for="2">destination</label>
-                    <input type="text" id="2" name="destination port" required/>
-                    <br>
-                    <label for="3" id="3">month</label>
-                    <input type="text" name="month" required/>
-                    <br>
-                    <label for="4">threshhold</label>
-                    <input type="text" id="4" name="threshold" required/>
-                    <br>
-                    <input type="hidden" name="operation" value="add">
-            </form>
+         </div>
+        {% endfor %}
+        <div style="margin-top: 110px;"></div>
+        <img src = "/uploads/index-navbar.png" class ="login-navbar" >
     </body>
