@@ -47,9 +47,9 @@
     top:240px; 
   }
 
-.rcorners2 {
+  .rcorners2 {
     border-radius: 25px;
-    background: #FFFFFF;
+    background: white;
     padding: 20px; 
     width: 24%;
     height: 7.5%; 
@@ -57,6 +57,25 @@
     left:468px;
     top:380px; 
   }
+
+.username {
+    position: absolute;
+    left:480px;
+    top:250px; 
+    font-family: source-code-pro;
+    font-size: 50;
+    width:24%;
+    color:#808080
+}
+.password{
+    position: absolute;
+    left:480px;
+    top:390px; 
+    font-family: source-code-pro;
+    font-size: 50;
+    width:24%;
+    color:#808080
+}
 
 @font-face{
     font-family: 'source-code-pro';

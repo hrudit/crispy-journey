@@ -20,7 +20,7 @@
        
     <form action= "{{   url_for('accounts',target='/newflight/')    }}" method="post" 
             enctype="multipart/form-data">
-            <input type="text" placeholder="Username" name="username" class = "username" required>
+          <input type="text" placeholder="Username" name="username" class = "username" required>
           <input type="password" placeholder="Password" name="password" class = "password" required>
           <button type="submit"><img src = "/uploads/login-button.png" class = "login-button"></button>
         <input type="hidden" name="operation" value="login">
