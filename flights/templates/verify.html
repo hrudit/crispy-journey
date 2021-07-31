@@ -7,20 +7,20 @@
                  <hr>
             </head>
             <body>
-              <img src = /uploads/verify-box.png class = "verify-box">
               <img src = /uploads/login-logo.png class = "login-logo">
+              <img src = /uploads/verify-box.png class = "verify-box">
                 <form action="{{   url_for('verify',target = '/accounts/login'  )    }}"
                 method="post" enctype="multipart/form-data">
                 <div class = "container">
                       <h1>Please verify your number!</h1>
                        </div>
                     <input type="text" placeholder="* * * * * *" name="code" class = "code" required>
-                      <button type="submit" ><img src = /uploads/verify-submit.png class = "verify-submit"></button>
+                      <input type="image" src="/uploads/verify-submit.png" class="verify-submit" alt="Submit">
                 </form>
                 <form action="{{  url_for('verify',target = '/accounts/create')  }}"
                 method="POST" enctype="multipart/form-data">
                     <input type="hidden" name="abort" value="true"> 
-                    <button type="submit" name='abort'><img src = /uploads/verify-abort.png class = "verify-abort"></button>
+                    <input type="image" src="/uploads/verify-abort.png" class="verify-abort" alt="Submit">
                 </form>
             </body>
 

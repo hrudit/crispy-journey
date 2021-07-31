@@ -2,62 +2,78 @@
 <html lang="en">
 
 <head>
-<title>
-    newflight
-</title>
+    <title>newflight</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style-newflight.css') }}">
 </head>
 
+<style>
+
+</style>
+
 <body>
-    <form action= "{{url_for('logout') }}" method="post" enctype="multipart/form-data">
-        <input type="submit" name="logout" value="Logout"/>
-      </form>
-    <div style="text-align: right"><a href="/">My Flights</a></div>
-    <h1 style="text-align: center; margin-top: 200px">Flights</h1>
-    <form action="{{   url_for('add',target='/' )    }}" method="post" enctype="multipart/form-data">
 
-        <br>
-        <div style="text-align: center;">
-        <label for="1">origin</label>
-        <input type="text" id="1" name="origin port" required/>                       
-        <label for="2">destination</label>
-        <input type="text" id="2" name="destination port" required/>
-        </div>
-        <br>
+    <img src="/uploads/newflight-logo.png" class="newflight-logo">
 
-        <div style="text-align: center;">
-        <label for="3" id="3">month</label>
-        <input type="text" name="month" required/>
-        </div>
-
-        <br>
-        <div style="text-align: center;">
-        <label for="4">threshhold</label>
-        <input type="text" id="4" name="threshold" required/>   
-        </div>
-        <br>
-
-        <input type="hidden" name="operation" value="add">
-        <br>
-        <div style="text-align: center;">
-            <input type="submit" name="add" value="add"/>
-        </div>
-    </form>
-
-    {% if (not is_first_load) and (not no_results) %}
-        <div style="text-align: center;">
-            <h3>Sorry, we could not find flights between those specific airports!</h3>
-            <h4>Fortunately we found an alternate route between the same two cities!</h4>
+    
+    
+    <div class="redirect-buttons">
+        <form action= "{{url_for('logout') }}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="logout" value="Logout"/>
+            <button type="submit"><img src="/uploads/newflight-button2.png" class="logout-button"></button>
+        </form>
+        <div style="text-align: right"><a href="/"><img src="/uploads/newflight-button1.png" class="my-flights-button"></a></div>
+    </div>
+    
+    <div class="boarding-pass">
+        <img src="/uploads/boarding-pass.png" class="boarding-pass-image">
+        <form action="{{   url_for('add',target='/' )    }}" method="post" enctype="multipart/form-data">
+            
             <br>
-            <h4>Try searching for Source = {{ src }} and Destination = {{ dest }}.</h4>
-        </div>        
+            <div style="text-align: center;">
+                <input type="text" id="1" name="origin port" class="origin" required/>                       
+                <input type="text" id="2" name="destination port" class="destination" required/>
+            </div>
+            <br>
+            
+            <div style="text-align: center;">
+                <input type="text" name="month" class="month" required/>
+            </div>
+            
+            <br>
+            <div class="threshold">
+                Threshold
+                <br>
+                <input type="text" id="4" name="threshold" required/>   
+            </div>
+            <br>
+            
+            <input type="hidden" name="operation" value="add">
+            <br>
+            <input type="hidden" name="add" value="add"/>
+            <input type="image" src="/uploads/newflight-add.png" class="add-button" alt="Submit">
+        </form>
+    </div>
+    
+    
+    {% if (not is_first_load) and (not no_results) %}
+    <div style="text-align: center;" class="message-txt">
+        <h3>Sorry, we could not find flights between those specific airports!</h3>
+        <h4>Fortunately we found an alternate route between the same two cities!</h4>
+        <h4>Try searching for Source = {{ src }} and Destination = {{ dest }}.</h4>
+    </div>        
     {% endif %}
     
     {% if (not is_first_load) and no_results %}
-    <div style="text-align: center;">
+    <div style="text-align: center;" class="message-txt">
         <h3>Sorry, we were unable to find any tickets between those two cities!</h3>
         <h3>Please try a different query!</h3>
     </div>
     {% endif %}
+
+
+    <div class="sample-class">
+        <img src="/uploads/newflight-navbar.png" class="newflight-navbar">    
+    </div>
 </body>
 
 </html>

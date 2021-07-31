@@ -12,21 +12,24 @@
 
 
 <body> 
-    <img src = "/uploads/create-box.png" class = "create-box">
-    
-     <img src = "/uploads/login-logo.png" class = "login-logo">
-     <img src = "/uploads/create-loginpage.png" class = "create-loginpage">
+  
+  <img src = "/uploads/login-logo.png" class = "login-logo">
+  <a href="/accounts/login"><img src = "/uploads/create-loginpage.png" class = "create-loginpage"></a>
+  
 
-    <form action="{{   url_for('accounts',target = '/newflight/'  )    }}"
-        method="post" enctype="multipart/form-data">  
-      <input type="text" placeholder="fullname" name="fullname" class = "fullname" required>
-      <input type="text" placeholder="username" name="username" class = "username" required>
-      <input type="text" placeholder="email" name="email" class = "email" required>
-      <input type="password" placeholder="password" name="password" class = "password" required>
-      <input type="text" placeholder="+1" name="phone" class = "phone" required>
-      <input type="hidden" name="operation" value="create">  
-        <button type="submit"><img src = "/uploads/create-bottom-img.png" class = "create-bottom-img"></button>
-  </form>
+  <div class="create-box">
+    <img src = "/uploads/create-box.png" class = "create-box-img">
+      <form action="{{   url_for('accounts',target = '/newflight/'  )    }}"
+          method="post" enctype="multipart/form-data">  
+        <input type="text" placeholder="fullname" name="fullname" class = "fullname" required>
+        <input type="text" placeholder="username" name="username" class = "username" required>
+        <input type="text" placeholder="email" name="email" class = "email" required>
+        <input type="password" placeholder="password" name="password" class = "password" required>
+        <input type="text" placeholder="+1" name="phone" class = "phone" required>
+        <input type="hidden" name="operation" value="create">  
+        <input type="image" src="/uploads/create-bottom-img.png" class="create-bottom-img" alt="Submit">  
+    </form>
+  </div>
 
 </body>
 

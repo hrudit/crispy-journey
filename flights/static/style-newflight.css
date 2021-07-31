@@ -1,0 +1,118 @@
+.newflight-logo{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 8vh;
+    width: 9vw;
+}
+
+.sample-class{
+    text-align: center;
+    position: absolute;
+    bottom: 0px;
+}
+
+.newflight-navbar{
+    display: inline-block;
+    width: 50%;
+    position: relative;
+}
+
+
+.redirect-buttons{
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    height: 12vh;
+    width: 40vw;
+}
+
+.logout-button{
+    position: absolute;
+    height: 100%;
+    width: 40%;
+    right: 5%;
+    top: 0%;
+}
+
+.my-flights-button{
+    position: absolute;
+    height: 100%;
+    width: 40%;
+    left: 0%;
+    top: 0%;
+}
+
+.boarding-pass{
+    position: relative;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 55vh;
+    width: 75vw;
+    top: 15vh;
+}
+
+.boarding-pass-image{
+    display: block;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    height: 85%;
+    width: 75%;
+}
+
+.origin{
+    position: absolute;
+    left: 28%;
+    top: 26%;
+    height: 15%;
+    font-family: source-code-pro;
+    font-size: 100%;
+}
+
+.destination{
+    position: absolute;
+    right: 32%;
+    top: 26%;
+    height: 15%;
+    font-family: source-code-pro;
+    font-size: 100%;
+}
+
+.month{
+    position: absolute;
+    left: 28%;
+    bottom: 37%;
+    font-family: source-code-pro;
+}
+
+.threshold{
+    position: absolute;
+    right: 14%;
+    bottom: 43%;
+    font-family: source-code-pro;
+}
+
+.add-button{
+    display: block;
+    position: relative;
+    height: 12%;
+    width: 12%;
+    margin-left: auto;
+    margin-right: auto;
+    bottom: 10vh;
+}
+
+.message-txt{
+    position: relative;
+    top: 13vh;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: source-code-pro;
+}
+
+@font-face{
+    font-family: 'source-code-pro';
+    src:url(source-code-pro/SourceCodePro-Black.otf); 
+}

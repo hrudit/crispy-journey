@@ -42,8 +42,8 @@
 }
 .username {
     position: absolute;
-    left:500px;
-    top:110px; 
+    left:30vw;
+    top:15vh; 
     height:12%;
     font-family: source-code-pro;
     font-size: 50;
@@ -52,21 +52,22 @@
 }
 .fullname{
     position: absolute;
-    left:500px;
-    top:250px; 
+    left:30vw;
+    top:35vh; 
     font-family: source-code-pro;
     font-size: 25;
-    width:20%;
-    height:10%;
+    width:24%;
+    height:12%;
     color:#808080
 }
 .email{
     position: absolute;
-    left:500px;
-    top:390px; 
+    left:30vw;
+    top:55vh; 
     font-family: source-code-pro;
     font-size: 25;
-    width:15%;
+    width:24%;
+    height: 12%;
     color:#808080
 }
 

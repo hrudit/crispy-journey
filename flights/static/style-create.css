@@ -1,16 +1,25 @@
 .create-box{
     position: absolute;
-    width: 30%;
-    height:80%;
-    left:468px;
-    top:20px; 
+    width: 30vw;
+    height:80vh;
+    left:33vw;
+    top:10vh; 
 }
+
+.create-box-img{
+    position: relative;
+    width: 80%;
+    height:80%;
+    left: 10%;
+
+}
+
 .create-bottom-img{
-    position: absolute;
-    bottom:5px; 
-    left: 500px;
-    width: 25%;
-    height: 13%;
+    position: relative;
+    height: 10vh;
+    width: 15vw;
+    left: 7vw;
+    top: 3vh;
 }
 .login-logo{
     position: absolute;
@@ -21,55 +30,60 @@
 }
 .create-loginpage{
     position: absolute;
-    right: 20px;
-    width: 15%;
-    top:20px; 
-    height: 9%;
+    right: 2vw;
+    top:3vh; 
+    width: 15vw;
+    height: 9vh;
 }
 
 .username{
     position: absolute;
-    left:530px;
-    top:65px; 
+    top: 4%;
+    left: 23%;
+    height: 8%;
+    width: 45%;
     font-family: source-code-pro;
     font-size: 25;
-    width:15%;
     color:#808080
 }
 .fullname{
     position: absolute;
-    left:530px;
-    top:165px; 
+    top: 18.5%;
+    left: 23%;
+    height: 8%;
+    width: 45%;
     font-family: source-code-pro;
     font-size: 25;
-    width:15%;
     color:#808080
 }
 .email{
     position: absolute;
-    left:530px;
-    top:265px; 
+    top: 33%;
+    left: 23%;
+    height: 8%;
+    width: 45%;
     font-family: source-code-pro;
     font-size: 25;
-    width:15%;
     color:#808080
 }
 .phone{
     position: absolute;
-    left:530px;
-    top:365px; 
+    top: 48.5%;
+    left: 23%;
+    height: 8%;
+    width: 45%;
     font-family: source-code-pro;
     font-size: 25;
-    width:15%;
     color:#808080
 }
 .password{
     position: absolute;
-    left:530px;
-    top:465px; 
+    top: 63.5%;
+    left: 23%;
+    height: 8%;
+    width: 45%;
     font-family: source-code-pro;
     font-size: 25;
-    width:15%;
     color:#808080
 }
 
