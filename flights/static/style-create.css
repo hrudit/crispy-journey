@@ -23,9 +23,9 @@
 }
 .login-logo{
     position: absolute;
-    left: 20px;
+    left: 1vw;
     width: 10%;
-    top:20px; 
+    top:1vh; 
     height: 10%;
 }
 .create-loginpage{

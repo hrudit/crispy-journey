@@ -2,35 +2,28 @@
     position: absolute;
     width: 30%;
     height:80%;
-    left:468px;
-    top:20px; 
+    left:36.5vw;
+    top:2vh; 
 }
 .edit-bottom-img{
     position: absolute;
-    bottom:5px; 
-    left: 500px;
+    bottom:1vh; 
+    left: 56vw;
     width: 25%;
     height: 13%;
 }
 .edit-delete-img{
     position: absolute;
-    bottom:5px; 
-    left: 100px;
-    width: 25%;
-    height: 13%;
-}
-.edit-change-password-img{
-    position: absolute;
-    bottom:5px; 
-    right: 100px;
+    bottom:1vh; 
+    left: 26vw;
     width: 25%;
     height: 13%;
 }
 .login-logo{
     position: absolute;
-    left: 20px;
+    left: 1vh;
     width: 10%;
-    top:20px; 
+    top:1vh; 
     height: 10%;
 }
 .create-loginpage{
@@ -42,8 +35,8 @@
 }
 .username {
     position: absolute;
-    left:30vw;
-    top:15vh; 
+    left:39vw;
+    top:15.5vh; 
     height:12%;
     font-family: source-code-pro;
     font-size: 50;
@@ -52,7 +45,7 @@
 }
 .fullname{
     position: absolute;
-    left:30vw;
+    left:39vw;
     top:35vh; 
     font-family: source-code-pro;
     font-size: 25;
@@ -60,9 +53,10 @@
     height:12%;
     color:#808080
 }
+
 .email{
     position: absolute;
-    left:30vw;
+    left:39vw;
     top:55vh; 
     font-family: source-code-pro;
     font-size: 25;

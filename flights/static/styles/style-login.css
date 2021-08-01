@@ -55,23 +55,23 @@
 
 .login-button{
     position: absolute;
-    bottom:100px; 
+    bottom:10vh; 
     left: 35vw;
     width: 30%;
     height: 10%;
 }
 .login-logo{
     position: absolute;
-    left: 20px;
+    left: 1vh;
     width: 10%;
-    top:20px; 
+    top:1vh; 
     height: 10%;
 }
 .login-signup{
     position: absolute;
-    right: 20px;
+    right: 1vw;
     width: 12.5%;
-    top:20px; 
+    top:2vh; 
     height: 7.5%;
 }
 

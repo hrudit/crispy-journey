@@ -2,27 +2,28 @@
     position: absolute;
     width: 30%;
     height: 70%;
-    top: 20px;
-    left: 450px;
+    top: 1vh;
+    left: 23.4vw;
 }
 .container{
     position: absolute;
-    left:400px; 
+    left:32vw; 
     font-family: source-code-pro;
     color: 	#1c3bbf;
 }
 .login-logo{
     position: absolute;
-    left: 20px;
+    left: 1vw;
     width: 10%;
-    top:20px; 
+    top:1vh; 
     height: 10%;
 }
+
 .code{
     position: absolute;
-    top:200px; 
+    top:40vh; 
     font-size: 50px;
-    left:550px; 
+    left:43vw; 
     width:15%;
 
 }
@@ -30,23 +31,23 @@
     position: absolute;
     width: 10%;
     height:10%;
-    bottom: 50px;
-    left:575px;
+    bottom: 5vh;
+    left:55vw;
 }
 
 .verify-box{
     position: absolute;
-    bottom:100px; 
-    left: 450px;
-    top:100px;
+    bottom:5vh; 
+    left: 36vw;
+    top:22vh;
     width: 30%;
     height: 50%; 
 }
 .verify-submit{
     position: absolute;
-    left: 575px;
+    left: 39vw;
     width: 10%;
-    bottom:150px; 
+    bottom:5vh; 
     height: 10%;
 }
 
