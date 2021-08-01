@@ -18,28 +18,28 @@ fi
 # Parse argument.  $1 is the first argument
 case $1 in
   "create")
-    if [ -e var/insta485.sqlite3 ]; then
-    echo "var/insta485.sqlite3"
+    if [ -e var/flights.sqlite3 ]; then
+    echo "var/flights.sqlite3"
     exit 1
     fi
     mkdir -p var/uploads
-    sqlite3 var/insta485.sqlite3 < sql/schema.sql
-    sqlite3 var/insta485.sqlite3 < sql/data.sql
+    sqlite3 var/flights.sqlite3 < sql/schema.sql
+    sqlite3 var/flights.sqlite3 < sql/data.sql
     ;;
 
   "destroy")
-    rm -rf var/insta485.sqlite3 
+    rm -rf var/flights.sqlite3 
     ;;
 
   "reset")
-    rm -rf var/insta485.sqlite3 
-    sqlite3 var/insta485.sqlite3 < sql/schema.sql
-    sqlite3 var/insta485.sqlite3 < sql/data.sql
+    rm -rf var/flights.sqlite3 
+    sqlite3 var/flights.sqlite3 < sql/schema.sql
+    sqlite3 var/flights.sqlite3 < sql/data.sql
     ;;
 
   "dump")
-    sqlite3 -batch -line var/insta485.sqlite3 'SELECT * FROM trips'
-    sqlite3 -batch -line var/insta485.sqlite3 'SELECT * FROM users'
+    sqlite3 -batch -line var/flights.sqlite3 'SELECT * FROM trips'
+    sqlite3 -batch -line var/flights.sqlite3 'SELECT * FROM users'
     ;;
   *)
     usage

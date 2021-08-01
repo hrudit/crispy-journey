@@ -1,4 +1,4 @@
-"""Insta485 model (database) API."""
+"""flights model (database) API."""
 import sqlite3
 import flask
 import flights

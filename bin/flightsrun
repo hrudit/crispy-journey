@@ -6,7 +6,7 @@
 set -Eeuo pipefail
 set -x
 
-if [ ! -e var/insta485.sqlite3 ]; then
+if [ ! -e var/flights.sqlite3 ]; then
     ./bin/flightsdb reset
 fi
 

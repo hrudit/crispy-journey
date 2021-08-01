@@ -11,20 +11,22 @@
       input[type='password'] { font-size: 50px; color:gray }
       </style>
     <body>
-      <img src = "/uploads/login-passport.png" class = "login-passport"> 
-      <img src = "/uploads/login-nav.png" class = "login-navbar">
       <img src = "/uploads/login-logo.png" class = "login-logo">
+      
+      <img src = "/uploads/login-passport.png" class = "login-passport"> 
       <div class = "rcorners1"></div>
       <div class = "rcorners2"></div>
-
-       
-    <form action= "{{   url_for('accounts',target='/newflight/')    }}" method="post" 
-            enctype="multipart/form-data">
-          <input type="text" placeholder="Username" name="username" class = "username" required>
-          <input type="password" placeholder="Password" name="password" class = "password" required>
-          <input type="image" src="/uploads/login-button.png" class="login-button" alt="Submit">
-        <input type="hidden" name="operation" value="login">
-      </form>
-
-      <a href='/accounts/create/'><img src = "/uploads/login-signup.png" class = "login-signup"></a>
+      
+      <form action= "{{   url_for('accounts',target='/newflight/')    }}" method="post" 
+      enctype="multipart/form-data">
+      <input type="text" placeholder="Username" name="username" class = "username" required>
+      <input type="password" placeholder="Password" name="password" class = "password" required>
+      <input type="image" src="/uploads/login-button.png" class="login-button" alt="Submit">
+      <input type="hidden" name="operation" value="login">
+    </form>
+    
+    <a href='/accounts/create/'><img src = "/uploads/login-signup.png" class = "login-signup"></a>
+    <div class="sample-class">
+      <img src = "/uploads/login-nav.png" class = "login-navbar">
+    </div>  
     </body>

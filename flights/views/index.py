@@ -165,6 +165,7 @@ def show_index():
         t = AppContextThread(target=send_messages)
         t.start()
         lis.append(1)
+
     if not 'username' in flask.session:
         return flask.redirect(flask.url_for('login'))
 
