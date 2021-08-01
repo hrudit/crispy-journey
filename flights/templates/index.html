@@ -32,8 +32,8 @@
          {% for flight in flighty %} 
          <div style="margin-top: 30px;"></div>
          <div class="trip-div">
-            <div class="trip-left-image" style="background-image: url(/uploads/goa.jpeg); background-repeat: no-repeat;background-size:cover;"></div>
-            <div class="trip-right-image" style="background-image: url(/uploads/london_2.jpeg);background-repeat: no-repeat;background-size:cover;"></div>
+            <div class="trip-left-image" style="background-image: url({{flight.image0}}); background-repeat: no-repeat;background-size:cover;"></div>
+            <div class="trip-right-image" style="background-image: url({{flight.image1}});background-repeat: no-repeat;background-size:cover;"></div>
             <img src="/uploads/index-main-bar.png" class = "yellow-box">
             <img src="/uploads/index-bar.png" class = "green-box">
             <p class="start">{{ flight.start }}</p>

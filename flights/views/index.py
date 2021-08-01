@@ -144,7 +144,6 @@ def make_request(query):
             "Accept":	"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
             "Accept-Encoding":	"gzip, deflate, br",
             "Accept-Language":	"en-US,en;q=0.5",
-            "Host":	"unsplash.com",
             "User-Agent":	"Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0"
         }
     return requests.request("GET",url, headers=headers)
@@ -212,10 +211,12 @@ def show_index():
             trip_dict['price']=min_price
             if min_price<= trip['threshhold']:
                 trip_dict['less_than']=True
+            trip_dict['image0'] = Scrapper(json_data['Places'][0]['CityName'])
+            trip_dict['image1'] = Scrapper(json_data['Places'][1]['CityName']+'skyline')
+
         all_trip_best.append(trip_dict)
     
-    image0 = Scrapper("new york city")
-    image1 = Scrapper("detroit")
+
     # here don't we need to add the images for each trip 
     # should I make that change
     print(logged_in_user)
@@ -225,9 +226,7 @@ def show_index():
     )
     cur = cur.fetchall()
     first_name = cur[0]['fullname']
-
-    context = {'name': first_name, 'flighty': all_trip_best, 
-       'image0' : image0, 'image1' : image1}
+    context = {'name': first_name, 'flighty': all_trip_best}
     return flask.render_template("index.html", **context)
 
 
